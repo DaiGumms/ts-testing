@@ -1,32 +1,51 @@
 describe('Protractor Demo App', function() {
-    var firstNumber = element(by.model('first'));
-    var secondNumber = element(by.model('second'));
-    var goButton = element(by.id('gobutton'));
-    var latestResult = element(by.binding('latest'));
-    var history = element.all(by.repeater('result in memory'));
+
+    var EC = protractor.ExpectedConditions;
+
+    var username = element.all(by.deepCss('username'));
+    var password = element.all(by.deepCss('password'));
+    var loginButton = element.all(by.id('loginButton'));
+
+    var dashboard = element.all(by.tagName('evolution-dashboard'));
   
-    function add(a, b) {
-      firstNumber.sendKeys(a);
-      secondNumber.sendKeys(b);
-      goButton.click();
+    function login(a, b) {
+
+      username.sendKeys(a);
+      console.log('Entered Username: '+ a);
+      password.sendKeys(b);
+      console.log('Entered Password: ' + b);
+      loginButton.click();
+      console.log('Button Clicked');
+
     }
   
     beforeEach(function() {
-      browser.get('http://juliemr.github.io/protractor-demo/');
-    });
-  
-    it('should have a history', function() {
-      add(1, 2);
-      add(3, 4);
-  
-      expect(history.count()).toEqual(2);
-  
-      add(5, 6);
-  
-      expect(history.count()).toEqual(0); // This is wrong!
 
-      expect(history.last().getText()).toContain('1 + 2');
-      
-      expect(history.first().getText()).toContain('11'); // This is wrong!
+      browser.waitForAngularEnabled(false);
+      browser.get('https://evoweb4.evolutionjobs.local/dev/');
+
+      //browser.wait(EC.presenceOf(username), 5000, 'Element taking too long to appear.')
+
     });
+  
+    it('should log in', function() {
+
+      login('MONKT', 'redlorry');
+
+      expect(dashboard.isPresent()).toBe(true);
+      
+    });
+
+    it('username be a count of 1', function() {
+      
+      expect(username.count()).toEqual(1);
+
+    });
+
+    it('password be a count of 1', function() {
+      
+      expect(password.count()).toEqual(1);
+
+    });
+
   });
